@@ -6,15 +6,14 @@ git clone https://github.com/Klipper3d/klipper.git
 
 for board in "${boards[@]}"
 do
-	echo "Removing any remaining config from previous boards"
 	cd klipper
-	rm -rf .config
 	echo "Copying new config"
 	cp ../$board .config
-	echo "Cleaning klipper"
-	make clean KCONFIG_CONFIG=../$board
 	echo "Compiling klipper for $board"
 	make KCONFIG_CONFIG=../$board
+	echo "Cleaning up the mess we did"
+	# Distclean removes also the .config files for us
+	make distclean
 	cd ..
 	# This is an directory mounted from the host system
 	echo "Copying built image to output directory"
