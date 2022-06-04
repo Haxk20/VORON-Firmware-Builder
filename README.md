@@ -1,7 +1,7 @@
 # VORON-Firmware-Builder
 A repositary to hold the Dockerfile and scripts, configs used to build the VORON firmware images
 
-##How to use
+## How to use
 Please have docker preconfigured and ready.
 Build the docker image by
 ```
