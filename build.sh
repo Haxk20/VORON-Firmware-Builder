@@ -13,13 +13,19 @@ then
 		cp ../$board .config
 		echo "Compiling klipper for $board"
 		make KCONFIG_CONFIG=../$board
-		echo "Cleaning up the mess we did"
-		# Distclean removes also the .config files for us
-		make distclean
-		cd ..
-		# This is an directory mounted from the host system
-		echo "Copying built image to output directory"
-		cp klipper/out/klipper.bin /out/$board-firmware.bin
+		if [ $? -eq 0 ]
+		then
+			echo "Cleaning up the mess we did"
+			# Distclean removes also the .config files for us
+			make distclean
+			cd ..
+			# This is an directory mounted from the host system
+			echo "Copying built image to output directory"
+			cp klipper/out/klipper.bin /out/$board-firmware.bin
+		else
+			echo "Build for board $board failed. Doing distclean and continuing"
+			make distclean
+		fi
 	done
 else
 	if [[ " ${boards[*]} " == *" $BOARD "* ]]; then
@@ -28,18 +34,25 @@ else
 		cp ../$BOARD .config
 		echo "Compiling klipper for $BOARD"
 		make KCONFIG_CONFIG=../$BOARD
-		echo "Cleaning up the mess we did"
-		# Distclean removes also the .config files for us
-		make distclean
-		cd ..
-		# This is an directory mounted from the host system
-		echo "Copying built image to output directory"
-		cp klipper/out/klipper.bin /out/$BOARD-firmware.bin
+		if [ $? -eq 0 ]
+		then
+			echo "Cleaning up the mess we did"
+			# Distclean removes also the .config files for us
+			make distclean
+			cd ..
+			# This is an directory mounted from the host system
+			echo "Copying built image to output directory"
+			cp klipper/out/klipper.bin /out/$BOARD-firmware.bin
+		else
+			echo "Build for board $BOARD failed. Doing distclean and continuing"
+			make distclean
+		fi
 	else
 		echo "$BOARD is not a recognized board. Please check that the enviroment variable BOARD is one of the following:"
 		for board in "${boards[@]}"
 		do
 			echo "$board"
 		done
+		exit 1
 	fi
 fi
