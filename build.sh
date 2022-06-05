@@ -4,6 +4,11 @@ boards=("FLY-FLYF407ZG" "Octopus-STM32F429" "SKR1.34-Turbo" "SKR1.34-Non-Turbo" 
 
 git clone https://github.com/Klipper3d/klipper.git
 
+if [ -z "$OUTPUT_NAME" ]
+then
+	OUTPUT_NAME="firmware"
+fi
+
 if [ -z "$BOARD" ]
 then
 	for board in "${boards[@]}"
@@ -17,14 +22,14 @@ then
 		then
 			# This is an directory mounted from the host system
 			echo "Copying built image to output directory"
-			cp out/klipper.bin /out/$board-firmware.bin
+			cp out/klipper.bin /out/$board-$OUTPUT_NAME.bin
 			echo "Cleaning up the mess we did"
 			# Distclean removes also the .config files for us
-			make distclean
+			make distclean KCONFIG_CONFIG=../$board
 			cd ..
 		else
 			echo "Build for board $board failed. Doing distclean and continuing"
-			make distclean
+			make distclean KCONFIG_CONFIG=../$board
 		fi
 	done
 else
@@ -38,14 +43,14 @@ else
 		then
 			# This is an directory mounted from the host system
 			echo "Copying built image to output directory"
-			cp out/klipper.bin /out/$BOARD-firmware.bin
+			cp out/klipper.bin /out/$BOARD-$OUTPUT_NAME.bin
 			echo "Cleaning up the mess we did"
 			# Distclean removes also the .config files for us
-			make distclean
+			make distclean KCONFIG_CONFIG=../$BOARD
 			cd ..
 		else
 			echo "Build for board $BOARD failed. Doing distclean and exiting"
-			make distclean
+			make distclean KCONFIG_CONFIG=../$BOARD
 			exit 1
 		fi
 	else
