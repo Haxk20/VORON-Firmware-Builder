@@ -44,8 +44,9 @@ else
 			echo "Copying built image to output directory"
 			cp klipper/out/klipper.bin /out/$BOARD-firmware.bin
 		else
-			echo "Build for board $BOARD failed. Doing distclean and continuing"
+			echo "Build for board $BOARD failed. Doing distclean and exiting"
 			make distclean
+			exit 1
 		fi
 	else
 		echo "$BOARD is not a recognized board. Please check that the enviroment variable BOARD is one of the following:"
